@@ -1,20 +1,22 @@
-import { AppBar, Toolbar, Typography } from "@mui/material"
-import Customer from "./components/Customer"
-
+import { AppBar, Toolbar, Typography } from "@mui/material";
+import { Link, Outlet } from "react-router-dom";
 
 function App() {
-  
-
   return (
     <>
-    <AppBar position="static">
-      <Toolbar>
-        <Typography variant="h6">Customer</Typography>
-      </Toolbar>
-    </AppBar>
-      <Customer />
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" component={Link} to={"/"} style={{ color: 'white' }}>
+            Customer
+          </Typography>
+          <Typography variant="h6" component={Link} to={"/training"} style={{ color: 'white' }}>
+            Training
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Outlet />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
