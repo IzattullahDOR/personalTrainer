@@ -2,6 +2,7 @@ import { AgGridReact } from "ag-grid-react";
 import { useEffect, useState } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-material.css";
+import dayjs from "dayjs";
 
 export default function Training(){
 
@@ -12,7 +13,9 @@ export default function Training(){
 
 const [columnDefs, setColumnDefs] = useState([
     { field: 'activity', headerName:'Activity', sortable: true, filter: true},
-    { field: 'date', headerName:'Date', sortable: true, filter: true},
+    { field: 'date', headerName:'Date', sortable: true, filter: true,
+    valueFormatter: params => 
+    dayjs(params.value).format('DD/MM/YYYY HH:mm')},
     {field: 'duration' , headerName:'Duration', sortable: true, filter: true},
     {field: 'customer', headerName:'Customer', sortable: true, filter: true},    
 ]);
