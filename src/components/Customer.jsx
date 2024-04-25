@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-material.css";
 import { Button, Snackbar } from "@mui/material";
-
+import DeleteIcon from '@mui/icons-material/Delete';
+import Addnewcustomer from "./Addnewcustomer";
 export default function Customer() {
     const [customers, setCustomers] = useState([{
         firstname: '',
@@ -27,14 +28,19 @@ export default function Customer() {
         {field:'phone', headerName:'Phone', sortable: true, filter: true},
         {
             cellRenderer: (params) =>
-            <Button
-                size="small"
+            <DeleteIcon 
+            size="small"
                 color="error"
-                onClick={() => deleteCustomer(params)}
-                >
-                    Delete
-            </Button>
-            ,width:120
+            onClick={() => deleteCustomer(params)}
+            />
+            // <Button
+            //     size="small"
+            //     color="error"
+            //     onClick={() => deleteCustomer(params)}
+            //     >
+            //         Delete
+            // </Button>
+            // ,width:120
             
         }
     ]);
@@ -65,13 +71,13 @@ export default function Customer() {
                 if (response.ok) {
 
                     setOpenSnackbar(true);
-                    setMsgSnackbar("The car was deleted successfully!")
+                    setMsgSnackbar("The customer was deleted successfully!")
                     getCustomers(); // haetaan tietokannasta tuore/päivitetty auto tilanne
                 }
 
                 else {
                     setOpenSnackbar(true);
-                    setMsgSnackbar("Something goes with deleting")
+                    setMsgSnackbar("Something went wrong with deleting")
                     // window.alert("Something goes with deleting")   Molemmat on mahdollista sekä alerti, snackbar
                 }
 
@@ -81,11 +87,32 @@ export default function Customer() {
         }
     }
     
+    const saveCustomer = (customer) =>{
+        fetch("https://customerrestservice-personaltraining.rahtiapp.fi/api/customers", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(customer)
+        })
+        .then(response => {
+            if (response.ok) {
+                setOpenSnackbar(true);
+                setMsgSnackbar("The customer was saved successfully!");
+                getCustomers(); // haetaan tietokannasta tuore/päivitetty auto tilanne  Fetch the updated car list after successfully saving
+            } else {
+                setOpenSnackbar(true);
+                setMsgSnackbar("Something went wrong with saving the customer.");
+            }
+        })
+        .catch(error => console.error(error));
+    }
 
     
 
     return (
         <>
+        <Addnewcustomer saveCustomer={saveCustomer} />
         <div className="ag-theme-material" style={{width: 1530, height: 500}}>
       <AgGridReact 
         rowData={customers}
