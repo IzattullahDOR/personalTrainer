@@ -4,7 +4,7 @@ import { Link, Outlet } from "react-router-dom";
 function App() {
   return (
     <>
-      <AppBar position="static">
+      <AppBar >
         <Toolbar>
           <Typography variant="h6" component={Link} to={"/"} style={{ color: 'white' }}>
             Customer

@@ -5,6 +5,7 @@ import "ag-grid-community/styles/ag-theme-material.css";
 import { Button, Snackbar } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import Addnewcustomer from "./Addnewcustomer";
+import Editcustomer from "./Editcustomer";
 export default function Customer() {
     const [customers, setCustomers] = useState([{
         firstname: '',
@@ -26,6 +27,12 @@ export default function Customer() {
         { field:'city' , headerName:'City', sortable: true, filter: true},
         { field:'email', headerName:'Email', sortable: true, filter: true},
         {field:'phone', headerName:'Phone', sortable: true, filter: true},
+        {
+            cellRenderer : row => <Editcustomer customer={row.data} updateCustomer={updateCustomer} />,
+            sortable:true,
+            fielter: true,
+            width:100
+        },
         {
             cellRenderer: (params) =>
             <DeleteIcon 
@@ -103,6 +110,29 @@ export default function Customer() {
             } else {
                 setOpenSnackbar(true);
                 setMsgSnackbar("Something went wrong with saving the customer.");
+            }
+        })
+        .catch(error => console.error(error));
+    }
+
+    // customer updating
+    const updateCustomer = (customer, link) =>{
+        fetch(link,{
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(customer)
+        }
+         )
+         .then(response => {
+            if (response.ok) {
+                setOpenSnackbar(true);
+                setMsgSnackbar("Customer update successfull!");
+                getCustomers(); // Fetch the updated customer list after successfully saving
+            } else {
+                setOpenSnackbar(true);
+                setMsgSnackbar("Something went wrong with updating the customer.");
             }
         })
         .catch(error => console.error(error));
