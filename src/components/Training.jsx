@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-material.css";
 import dayjs from "dayjs";
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Snackbar } from "@mui/material";
+import Addtraining from "./Addtraining";
 
 export default function Training() {
 
@@ -10,6 +13,9 @@ export default function Training() {
         activity: '', date: '', duration: '', customer: ''
 
     }]);
+
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [msgSnackbar, setMsgSnackbar] = useState("");
 
     const [columnDefs, setColumnDefs] = useState([
         { field: 'activity', headerName: 'Activity', sortable: true, filter: true },
@@ -23,6 +29,14 @@ export default function Training() {
             field: 'customer', headerName: 'Customer', sortable: true, filter: true,
             valueGetter: params => `${params.data.customer.firstname} ${params.data.customer.lastname}`
         },
+        {
+            cellRenderer: (params) =>
+                <DeleteIcon
+                    size="small"
+                    color="error"
+                    onClick={() => deleteTraining(params.data)}
+                />
+        }
     ]);
 
     useEffect(() => {
@@ -45,15 +59,79 @@ export default function Training() {
             .catch(error => console.error(error))
     }
 
+    // deleteTraining
+    const deleteTraining = (training) => {
+        console.log(training);
+
+        const url = `https://customerrestservice-personaltraining.rahtiapp.fi/api/trainings/${training.id}`
+        console.log(url);
+        if (window.confirm("Are you sure?")) {
+            fetch(url, {
+                method: 'DELETE'
+            })
+
+                .then(response => {
+                    if (response.ok) {
+
+                        setOpenSnackbar(true);
+                        setMsgSnackbar("The training was deleted successfully!")
+                        getTrainings(); // haetaan tietokannasta tuore/päivitetty auto tilanne
+                    }
+
+                    else {
+                        setOpenSnackbar(true);
+                        setMsgSnackbar("Something went wrong with deleting")
+                        // window.alert("Something goes with deleting")   Molemmat on mahdollista sekä alerti, snackbar
+                    }
+
+
+                })
+                .catch(error => console.error(error));
+        }
+    }
+    //Adding new training
+    const saveTraining = (training) =>{
+        fetch("https://customerrestservice-personaltraining.rahtiapp.fi/api/trainings", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(training)
+        })
+        .then(response => {
+            if (response.ok) {
+                setOpenSnackbar(true);
+                setMsgSnackbar("The training was saved successfully!");
+                getTrainings(); // haetaan tietokannasta tuore/päivitetty auto tilanne  Fetch the updated car list after successfully saving
+            } else {
+                setOpenSnackbar(true);
+                setMsgSnackbar("Something went wrong with saving the training.");
+            }
+        })
+        .catch(error => console.error(error));
+    }
     return (
         <>
+            <Addtraining saveTraining={saveTraining} />
             <div className="ag-theme-material" style={{ width: 1450, height: 500 }}>
                 <AgGridReact
                     rowData={trainings}
                     columnDefs={columnDefs}
                     pagination={true}
                 />
+
+
             </div>
+            <Snackbar
+                open={openSnackbar}
+                message={msgSnackbar}
+                autoHideDuration={3000}
+                onClose={() => {
+                    setOpenSnackbar(false);
+                    setMsgSnackbar("")
+                }}>
+
+            </Snackbar>
 
         </>
     );
