@@ -26,9 +26,19 @@ export default function Training() {
         },
         { field: 'duration', headerName: 'Duration', sortable: true, filter: true },
         {
-            field: 'customer', headerName: 'Customer', sortable: true, filter: true,
-            valueGetter: params => `${params.data.customer.firstname} ${params.data.customer.lastname}`
-        },
+            headerName: "Customer",
+            field: "customer",
+            valueFormatter: (params) => {
+              if (!params.value || typeof params.value !== 'object') {
+                return null;
+              }
+              
+              const { firstname, lastname } = params.value;
+              return `${firstname || 'null'} ${lastname || 'null'}`;
+            },
+            sortable: true,
+            filter: true,
+          },
         {
             cellRenderer: (params) =>
                 <DeleteIcon
