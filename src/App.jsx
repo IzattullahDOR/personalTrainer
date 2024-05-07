@@ -5,7 +5,7 @@ function App() {
   return (
     <>
       <AppBar >
-        <Toolbar>
+        <Toolbar style={{ display: 'flex', gap: '20px' }}>
           <Typography variant="h6" component={Link} to={"/"} style={{ color: 'white' }}>
             Customer
           </Typography>

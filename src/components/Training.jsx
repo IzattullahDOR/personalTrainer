@@ -91,7 +91,6 @@ export default function Training() {
                     else {
                         setOpenSnackbar(true);
                         setMsgSnackbar("Something went wrong with deleting")
-                        // window.alert("Something goes with deleting")   Molemmat on mahdollista sekä alerti, snackbar
                     }
 
 
