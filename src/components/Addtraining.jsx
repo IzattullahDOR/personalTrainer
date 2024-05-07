@@ -5,10 +5,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import MenuItem from '@mui/material/MenuItem';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import MenuItem from '@mui/material/MenuItem'; // Added import for MenuItem
 
 export default function Addtraining(props) {
 
@@ -16,11 +13,11 @@ export default function Addtraining(props) {
 
     const [training, setTraining] = React.useState({
         activity: '',
-        date: null,
+        date: '',
         duration: '',
         customer: ''
     });
-
+    
     const [customers, setCustomers] = useState([]);
 
     useEffect(() => {
@@ -29,12 +26,12 @@ export default function Addtraining(props) {
 
     const fetchCustomers = () => {
         fetch("https://customerrestservice-personaltraining.rahtiapp.fi/api/customers", { method: 'GET' })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data._embedded.customers)
-                setCustomers(data._embedded.customers);
-            })
-            .catch(error => console.error(error));
+        .then(response => response.json())
+        .then(data => {
+            console.log(data._embedded.customers)
+            setCustomers(data._embedded.customers);
+        })
+        .catch(error => console.error(error));
     };
 
     const handleClickOpen = () => {
@@ -46,8 +43,7 @@ export default function Addtraining(props) {
     };
 
     const handleInputChange = (event) => {
-        const { name, value } = event.target;
-        setTraining({ ...training, [name]: value });
+        setTraining({ ...training, [event.target.name]: event.target.value })
     };
 
     const addTraining = () => {
@@ -73,18 +69,15 @@ export default function Addtraining(props) {
                         fullWidth
                     />
 
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DateTimePicker
-                            autoFocus
-                            label="Date and Time"
-                            margin="dense"
-                            name="date"
-                            value={training.date}
-                            onChange={(value) => handleInputChange({ target: { name: 'date', value } })}
-                            fullWidth
-                        />
-                    </LocalizationProvider>
-
+                    <TextField
+                        autoFocus
+                        type="datetime-local"
+                        margin="dense"
+                        name="date"
+                        value={training.date ? training.date.slice(0, -1) : ''} // Format datetime
+                        onChange={handleInputChange}
+                        fullWidth
+                    />
                     <TextField
                         autoFocus
                         label="Duration"
@@ -102,7 +95,7 @@ export default function Addtraining(props) {
                         value={training.customer}
                         onChange={handleInputChange}
                         fullWidth
-                        select
+                        select // This indicates that this is a select input
                     >
                         {customers.map((customer, index) => (
                             <MenuItem key={index} value={customer._links.self.href}>

@@ -2,7 +2,7 @@ import { AgGridReact } from "ag-grid-react";
 import { useEffect, useState } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-material.css";
-import { Snackbar } from "@mui/material";
+import { Button, Snackbar } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import Addnewcustomer from "./Addnewcustomer";
 import Editcustomer from "./Editcustomer";
@@ -39,7 +39,16 @@ export default function Customer() {
             size="small"
                 color="error"
             onClick={() => deleteCustomer(params)}
-            />            
+            />
+            // <Button
+            //     size="small"
+            //     color="error"
+            //     onClick={() => deleteCustomer(params)}
+            //     >
+            //         Delete
+            // </Button>
+            // ,width:120
+            
         }
     ]);
 
@@ -76,6 +85,7 @@ export default function Customer() {
                 else {
                     setOpenSnackbar(true);
                     setMsgSnackbar("Something went wrong with deleting")
+                    // window.alert("Something goes with deleting")   Molemmat on mahdollista sekä alerti, snackbar
                 }
 
 
